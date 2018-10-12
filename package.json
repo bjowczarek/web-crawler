@@ -1,0 +1,13 @@
+{
+    "name": "web-crawler",
+    "version": "1.0.0",
+    "description": "Tiny webcrawler",
+    "main": "crawler.js",
+    "author": "bjowczarek",
+    "license": "ISC",
+    "dependencies": {
+        "cheerio": "latest",
+        "url-parse": "latest",
+        "request": "latest"
+    }
+}
