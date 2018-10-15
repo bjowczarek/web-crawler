@@ -32,6 +32,7 @@ obj.start = function(crawlingStartUrl){
 function crawl() {
     let nextPage = pagesToVisit.pop();
     if (typeof nextPage === "undefined") {
+        //async call without await.
         store.storeToFile();
         console.log("End crawling. Visited %s pages", numPagesVisited);
     } else if (pagesVisited.includes(nextPage)) {

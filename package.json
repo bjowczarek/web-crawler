@@ -5,9 +5,15 @@
     "main": "crawler.js",
     "author": "bjowczarek",
     "license": "ISC",
+    "scripts": {
+        "test": "./node_modules/.bin/mocha --reporter spec",
+        "start": "node ./crawler.js"
+    },
     "dependencies": {
-        "cheerio": "latest",
-        "url-parse": "latest",
-        "request": "latest"
+        "chai": "^4.2.0",
+        "cheerio": "^1.0.0-rc.2",
+        "mocha": "^5.2.0",
+        "request": "^2.88.0",
+        "url-parse": "^1.4.3"
     }
 }
