@@ -3,13 +3,14 @@ var request = require('request');
 var cheerio = require('cheerio');
 var URL = require('url-parse');
 var store = require('../storage/store.js');
+var config = require('../configuration/config.js').getConfig();
 
-let startUrl = "https://www.example.com";
+let startUrl;
 let pagesVisited = [];
 let numPagesVisited = 0;
 let pagesToVisit = [];
-let url = new URL(startUrl);
-let baseUrl = url.protocol + "//" + url.hostname;
+let url;
+let rIgnores;
 
 let obj = {};
 module.exports = obj;
@@ -18,10 +19,9 @@ module.exports = obj;
  * Crawler start function
  * @param {*} crawlingStartUrl - url for crawling begginging.
  */
-obj.start = function(crawlingStartUrl){
-    startUrl = crawlingStartUrl;
+obj.start = function(){
+    startUrl = config.startUrl;
     url = new URL(startUrl);
-    baseUrl = url.protocol + "//" + url.hostname;
     pagesToVisit.push(startUrl);
     crawl();
 }
@@ -31,7 +31,7 @@ obj.start = function(crawlingStartUrl){
  */
 function crawl() {
     let nextPage = pagesToVisit.pop();
-    if (typeof nextPage === "undefined") {
+    if (typeof nextPage === "undefined" || numPagesVisited === config.maxVisits) {
         //async call without await.
         store.storeToFile();
         console.log("End crawling. Visited %s pages", numPagesVisited);
@@ -110,15 +110,12 @@ function collectRelativeLinks(parentUrl, $) {
 }
 
 /**
- * Ignore function (anchors and queries as well as tags) . Should be moved to utils class. New regex should be generated once.
+ * Ignore function (anchors and queries as well as tags) . Should be moved to utils class. 
  * @param {*} link - url
  */
 function ignore(link){
-    let ignores = [
-        '#',
-        '\\?',
-        'tag'
-    ];
-    let rIgnores = new RegExp(ignores.join('|'), 'i');
+    if (typeof rIgnores === "undefined"){ 
+        rIgnores = new RegExp(config.ignores.join('|'), 'i');
+    }
     return link.match(rIgnores)
 }

@@ -1,6 +1,8 @@
 'use strict';
 var fs = require('fs');
-var path = require('path')
+var path = require('path');
+var config = require('../configuration/config.js').getConfig();
+
 
 let siteMap = {};
 let INIT_PAGE_PARAMS = {
@@ -8,6 +10,7 @@ let INIT_PAGE_PARAMS = {
     absoluteLinks: [],
     outsideLinks: []
 }
+
 
 let obj = {};
 module.exports = obj;
@@ -52,9 +55,24 @@ obj.addOutsideLink = function (parent, link) {
  * Write siteMap to file
  */
 obj.storeToFile = async function () {
+    if (config.countingMode){
+        siteMap = calcMap();
+    }
     let str = JSON.stringify(siteMap);
     let status = await writeFileAsPromise(str, path.resolve(__dirname, "../result.json"))
     return status;
+}
+
+function calcMap() {
+    let newMap = {};
+    for (let key in siteMap) {
+        newMap[key] = {
+            relativeLinks: siteMap[key].relativeLinks.length,
+            absoluteLinks: siteMap[key].absoluteLinks.length,
+            outsideLinks: siteMap[key].outsideLinks.length
+        }
+    }
+    return newMap;
 }
 
 /**
