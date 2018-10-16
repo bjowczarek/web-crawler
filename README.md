@@ -28,4 +28,5 @@ Results are stored in `result.json` file. For each page links are groupped in 3 
 * Results.json is created as "flat" site structure. Sub-sub-pages are not nested in root ones.
 * 'request' call could be wrapped with Promise, like file 'fs.writeFile' for better code readability.
 * Internet connection problem results in unhandled exception.
+* no logging only printing to console.
 
