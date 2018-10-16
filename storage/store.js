@@ -8,7 +8,8 @@ let siteMap = {};
 let INIT_PAGE_PARAMS = {
     relativeLinks: [],
     absoluteLinks: [],
-    outsideLinks: []
+    outsideLinks: [],
+    imageLinks: []
 }
 
 
@@ -52,6 +53,18 @@ obj.addOutsideLink = function (parent, link) {
     return siteMap;
 }
 /**
+ * add new link to image. Creates "flat" site structure. Sub-sub-pages are not nested in root.
+ * @param {*} parent parent url
+ * @param {*} link child url
+ */
+obj.addImageLink = function (parent, link) {
+    if (!siteMap.hasOwnProperty(parent)) {
+        siteMap[parent] = INIT_PAGE_PARAMS;
+    }
+    siteMap[parent].imageLinks.push(link);
+    return siteMap;
+}
+/**
  * Write siteMap to file
  */
 obj.storeToFile = async function () {
@@ -69,7 +82,8 @@ function calcMap() {
         newMap[key] = {
             relativeLinks: siteMap[key].relativeLinks.length,
             absoluteLinks: siteMap[key].absoluteLinks.length,
-            outsideLinks: siteMap[key].outsideLinks.length
+            outsideLinks: siteMap[key].outsideLinks.length,
+            imageLinks: siteMap[key].imageLinks.length
         }
     }
     return newMap;

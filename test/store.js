@@ -37,6 +37,17 @@ describe("Storage module", function () {
         });
     });
 
+    describe("Collect image link", function () {
+        it("collects image links", function () {
+            let parent = "https://example.com";
+            let map = store.addImageLink("https://example.com", "https://outside.com/site1/subpage1")
+            expect(map[parent].imageLinks).deep.equal(["https://outside.com/site1/subpage1"]);
+            let map2 = store.addImageLink("https://example.com", "https://outside.com/site2")
+            expect(map2[parent].imageLinks).deep.equal(["https://outside.com/site1/subpage1", "https://outside.com/site2"]);
+            expect(map).deep.equal(map2);
+        });
+    });
+
     describe("Save file", function () {
         it("saves a file.", async function() {
             await store.storeToFile();

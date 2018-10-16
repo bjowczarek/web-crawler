@@ -1,6 +1,6 @@
 {
     "startUrl": "https://wiprodigital.com",
     "ignores": ["#", "\\?", "tag"],
-    "maxVisits": 1,
-    "countingMode": true
+    "maxVisits": -1,
+    "countingMode": false
 }

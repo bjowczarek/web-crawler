@@ -1,7 +1,8 @@
 'use strict';
 var request = require('request');
 var cheerio = require('cheerio');
-var URL = require('url-parse');
+var nodeURL = require('url');
+
 var store = require('../storage/store.js');
 var config = require('../configuration/config.js').getConfig();
 
@@ -9,7 +10,6 @@ let startUrl;
 let pagesVisited = [];
 let numPagesVisited = 0;
 let pagesToVisit = [];
-let url;
 let rIgnores;
 
 let obj = {};
@@ -21,7 +21,6 @@ module.exports = obj;
  */
 obj.start = function(){
     startUrl = config.startUrl;
-    url = new URL(startUrl);
     pagesToVisit.push(startUrl);
     crawl();
 }
@@ -67,6 +66,7 @@ function visitPage(url, callback) {
         let $ = cheerio.load(body);
         collectLinks(url, $);
         collectRelativeLinks(url, $);
+        collectImages(url, $);
         callback();
 
     });
@@ -94,6 +94,15 @@ function collectLinks(parentUrl, $) {
         }
     });
 }
+//
+function collectImages(parentUrl, $){
+    let collectedImages = $("body").find("img");
+    console.log("Found " + collectedImages.length + " images on page");
+    collectedImages.each(function () {
+        let link = nodeURL.resolve(parentUrl, this.attribs.src)
+        store.addImageLink(parentUrl, link)
+    });
+}
 
 /**
  * Extract relative links from response body
@@ -108,6 +117,7 @@ function collectRelativeLinks(parentUrl, $) {
         store.addRelativeSiteLink(parentUrl, link)
     });
 }
+
 
 /**
  * Ignore function (anchors and queries as well as tags) . Should be moved to utils class. 
